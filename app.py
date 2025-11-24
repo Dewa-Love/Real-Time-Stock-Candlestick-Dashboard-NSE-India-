@@ -6,14 +6,14 @@ import plotly.express as px
 import ta
 from fix import fix_ohlc
 
-# ---------------------- PAGE CONFIG ----------------------
+# -------------------------------- PAGE CONFIG --------------------------------
 st.set_page_config(
     page_title="NSE Live Dashboard",
     page_icon="📈",
     layout="wide",
 )
 
-# ---------------------- CUSTOM CSS ----------------------
+# -------------------------------- CUSTOM CSS --------------------------------
 st.markdown("""
 <style>
 
@@ -45,11 +45,6 @@ h1, h2, h3, h4 {
     border: 1px solid #374151;
 }
 
-/* TABLES */
-table {
-    color: white !important;
-}
-
 /* SECTION DIVIDER */
 .section {
     margin-top: 30px;
@@ -60,12 +55,11 @@ table {
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------------- TITLE ----------------------
+# -------------------------------- APP TITLE --------------------------------
 st.title("🚀 NSE Live Trading Dashboard — Premium Edition")
-
 st.markdown("### 📌 Live Market Overview with Technical Indicators + Buy/Sell Signals\n")
 
-# ---------------------- SIDEBAR ----------------------
+# -------------------------------- SIDEBAR --------------------------------
 st.sidebar.header("⚙️ Settings")
 
 ticker = st.sidebar.text_input("🔎 NSE Ticker", "HDFCBANK.NS")
@@ -89,13 +83,13 @@ period = period_map[timeframe]
 
 refresh_sec = st.sidebar.slider("🔄 Auto-refresh (seconds)", 10, 120, 30)
 
+# NEW Streamlit auto-refresh API
+st_autorefresh = st.autorefresh(interval=refresh_sec * 1000, key="refresh")
+
 st.sidebar.markdown("---")
 st.sidebar.markdown("📊 *Dashboard updates live based on selected interval.*")
 
-# Auto-refresh
-st.experimental_autorefresh(interval=refresh_sec * 1000, key="refresh")
-
-# ---------------------- FETCH DATA ----------------------
+# -------------------------------- FETCH DATA --------------------------------
 df = yf.download(ticker, period=period, interval=timeframe)
 
 if df.empty:
@@ -104,7 +98,7 @@ if df.empty:
 
 df = fix_ohlc(df)
 
-# ---------------------- TECHNICAL INDICATORS ----------------------
+# -------------------------------- INDICATORS --------------------------------
 df["EMA20"] = ta.trend.ema_indicator(df["Close"], window=20)
 df["EMA50"] = ta.trend.ema_indicator(df["Close"], window=50)
 df["RSI"] = ta.momentum.rsi(df["Close"], window=14)
@@ -117,7 +111,7 @@ df["Signal"] = df["MACD"].ewm(span=9).mean()
 df["MA20"] = df["Close"].rolling(20).mean()
 df["MA50"] = df["Close"].rolling(50).mean()
 
-# ---------------------- SIGNALS ----------------------
+# -------------------------------- SIGNAL LOGIC --------------------------------
 df["MA_diff"] = df["MA20"] - df["MA50"]
 df["MA_diff_prev"] = df["MA_diff"].shift(1)
 
@@ -150,7 +144,7 @@ signals = df[df["SignalType"] != 0].copy()
 signals["Datetime"] = signals.index
 signals["Price"] = signals["Close"]
 
-# ---------------------- METRICS ----------------------
+# -------------------------------- METRICS --------------------------------
 st.markdown("<div class='section'></div>", unsafe_allow_html=True)
 st.subheader("📌 Key Price Metrics")
 
@@ -161,7 +155,7 @@ col2.markdown(f"<div class='metric-card'><h3>₹{df['Open'].iloc[-1]:.2f}</h3><p
 col3.markdown(f"<div class='metric-card'><h3>₹{df['High'].iloc[-1]:.2f}</h3><p>High</p></div>", unsafe_allow_html=True)
 col4.markdown(f"<div class='metric-card'><h3>₹{df['Low'].iloc[-1]:.2f}</h3><p>Low</p></div>", unsafe_allow_html=True)
 
-# ---------------------- CANDLESTICK ----------------------
+# -------------------------------- CANDLESTICK --------------------------------
 st.markdown("<div class='section'></div>", unsafe_allow_html=True)
 st.subheader("🕯 Candlestick Chart + Buy/Sell Signals")
 
@@ -204,12 +198,12 @@ fig.update_layout(
 
 st.plotly_chart(fig, use_container_width=True)
 
-# ---------------------- RSI ----------------------
+# -------------------------------- RSI --------------------------------
 st.markdown("<div class='section'></div>", unsafe_allow_html=True)
 st.subheader("📉 RSI (14-period)")
 st.line_chart(df["RSI"])
 
-# ---------------------- MACD ----------------------
+# -------------------------------- MACD --------------------------------
 st.markdown("<div class='section'></div>", unsafe_allow_html=True)
 st.subheader("📉 MACD Indicator")
 
@@ -221,13 +215,13 @@ fig_macd.update_layout(
 )
 st.plotly_chart(fig_macd, use_container_width=True)
 
-# ---------------------- SIGNAL TABLE ----------------------
+# -------------------------------- SIGNAL TABLE --------------------------------
 st.markdown("<div class='section'></div>", unsafe_allow_html=True)
 st.subheader("🔔 Recent Buy/Sell Signals")
 
 st.dataframe(signals[["Datetime", "Price", "SignalType", "SignalReason"]].tail(20))
 
-# ---------------------- RAW DATA ----------------------
+# -------------------------------- RAW DATA --------------------------------
 st.markdown("<div class='section'></div>", unsafe_allow_html=True)
 st.subheader("📄 Raw OHLC Data")
 st.dataframe(df.tail(50))
