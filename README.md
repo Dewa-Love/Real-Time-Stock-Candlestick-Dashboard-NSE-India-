@@ -59,11 +59,6 @@ This dashboard provides **live market data**, **technical indicators**, and **au
 | **Streamlit Cloud** | Deployment |
 <img width="1643" height="612" alt="Screenshot 2025-11-25 at 10 48 53 PM" src="https://github.com/user-attachments/assets/bd90e5c4-c28e-4a95-bb28-ca134f6ec663" />
 
-
-
----<img width="1643" height="612" alt="Screenshot 2025-11-25 at 10 48 43 PM" src="https://github.com/user-attachments/assets/4cef0665-6bbb-4132-b1f6-2897081f1b5a" />
-
-
 # 📦 Installation<img width="1643" height="916" alt="Screenshot 2025-11-25 at 10 48 10 PM" src="https://github.com/user-attachments/assets/aa6a958f-3942-4548-a3cf-aed00d94ee6c" />
 
 <img width="1643" height="916" alt="Screenshot 2025-11-25 at 10 48 24 PM" src="https://github.com/user-attachments/assets/6db4f508-9395-4570-8f49-2215f19b6fb2" />
