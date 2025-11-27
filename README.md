@@ -8,6 +8,9 @@ This dashboard provides **live market data**, **technical indicators**, and **au
 <br>
 
 ---
+## 🚀 Live App  
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://devdreams-dxaryavge7cr8cxhtjbova.streamlit.app/)
+
 
 # ✨ Features
 
